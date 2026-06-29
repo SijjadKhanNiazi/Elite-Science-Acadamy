@@ -2,25 +2,14 @@
 import React, { useEffect, useState } from "react";
 import API from "../api/axios";
 
-// Subject se color mapping
-const subjectColors = {
-  Physics: { from: "#6366F1", to: "#818CF8", light: "#EEF2FF" },
-  Chemistry: { from: "#10B981", to: "#34D399", light: "#ECFDF5" },
-  Biology: { from: "#EC4899", to: "#F472B6", light: "#FDF2F8" },
-  Mathematics: { from: "#F59E0B", to: "#FCD34D", light: "#FFFBEB" },
-  Math: { from: "#F59E0B", to: "#FCD34D", light: "#FFFBEB" },
-  English: { from: "#3B82F6", to: "#60A5FA", light: "#EFF6FF" },
-  Urdu: { from: "#8B5CF6", to: "#A78BFA", light: "#F5F3FF" },
-  Computer: { from: "#14B8A6", to: "#2DD4BF", light: "#F0FDFA" },
-  Islamiat: { from: "#84CC16", to: "#A3E635", light: "#F7FEE7" },
-  default: { from: "#1E3A8A", to: "#3B82F6", light: "#EFF6FF" },
-};
-
-const getColor = (subject = "") => {
-  const key = Object.keys(subjectColors).find((k) =>
-    subject.toLowerCase().includes(k.toLowerCase()),
-  );
-  return subjectColors[key] || subjectColors.default;
+// Single consistent theme for every card — navy + amber, matching
+// the rest of the site. No more per-subject color variation.
+const THEME = {
+  from: "#1E3A8A",
+  to: "#3B5FCC",
+  accent: "#F59E0B",
+  accentLight: "#FFFBEB",
+  light: "#EEF2FF",
 };
 
 // Subject ka first letter / initials (avatar fallback)
@@ -36,16 +25,16 @@ const getInitials = (name = "") =>
 const ExperienceDots = ({ years }) => {
   const filled = Math.min(Math.round(years / 3), 5);
   return (
-    <div className="flex gap-1 mt-1">
+    <div className="flex gap-1.5 mt-1.5" aria-hidden="true">
       {Array.from({ length: 5 }).map((_, i) => (
         <span
           key={i}
           style={{
-            width: 7,
-            height: 7,
+            width: 8,
+            height: 8,
             borderRadius: "50%",
             display: "inline-block",
-            background: i < filled ? "currentColor" : "rgba(0,0,0,0.12)",
+            background: i < filled ? THEME.accent : "rgba(15,23,42,0.10)",
             transition: "background 0.3s",
           }}
         />
@@ -59,44 +48,52 @@ const SkeletonCard = () => (
   <div
     style={{
       background: "#fff",
-      borderRadius: 20,
+      borderRadius: 22,
       overflow: "hidden",
-      boxShadow: "0 4px 24px rgba(30,58,138,0.07)",
-      padding: "28px 24px 24px",
-      animation: "pulse 1.5s ease-in-out infinite",
+      boxShadow: "0 4px 24px rgba(30,58,138,0.08)",
+      padding: "32px 28px 28px",
     }}
   >
     <div
       style={{
         display: "flex",
         alignItems: "center",
-        gap: 16,
-        marginBottom: 20,
+        gap: 18,
+        marginBottom: 24,
       }}
     >
       <div
         style={{
-          width: 72,
-          height: 72,
+          width: 84,
+          height: 84,
           borderRadius: "50%",
-          background: "#E5E7EB",
+          background:
+            "linear-gradient(100deg, #E5E7EB 30%, #F1F3F6 50%, #E5E7EB 70%)",
+          backgroundSize: "200% 100%",
+          animation: "shimmer 1.8s ease-in-out infinite",
           flexShrink: 0,
         }}
       />
       <div style={{ flex: 1 }}>
         <div
           style={{
-            height: 16,
-            background: "#E5E7EB",
+            height: 18,
+            background:
+              "linear-gradient(100deg, #E5E7EB 30%, #F1F3F6 50%, #E5E7EB 70%)",
+            backgroundSize: "200% 100%",
+            animation: "shimmer 1.8s ease-in-out infinite",
             borderRadius: 8,
-            marginBottom: 10,
+            marginBottom: 12,
             width: "70%",
           }}
         />
         <div
           style={{
-            height: 12,
-            background: "#E5E7EB",
+            height: 13,
+            background:
+              "linear-gradient(100deg, #E5E7EB 30%, #F1F3F6 50%, #E5E7EB 70%)",
+            backgroundSize: "200% 100%",
+            animation: "shimmer 1.8s ease-in-out infinite",
             borderRadius: 8,
             width: "50%",
           }}
@@ -105,16 +102,22 @@ const SkeletonCard = () => (
     </div>
     <div
       style={{
-        height: 10,
-        background: "#E5E7EB",
+        height: 12,
+        background:
+          "linear-gradient(100deg, #E5E7EB 30%, #F1F3F6 50%, #E5E7EB 70%)",
+        backgroundSize: "200% 100%",
+        animation: "shimmer 1.8s ease-in-out infinite",
         borderRadius: 8,
-        marginBottom: 8,
+        marginBottom: 10,
       }}
     />
     <div
       style={{
-        height: 10,
-        background: "#E5E7EB",
+        height: 12,
+        background:
+          "linear-gradient(100deg, #E5E7EB 30%, #F1F3F6 50%, #E5E7EB 70%)",
+        backgroundSize: "200% 100%",
+        animation: "shimmer 1.8s ease-in-out infinite",
         borderRadius: 8,
         width: "60%",
       }}
@@ -125,75 +128,89 @@ const SkeletonCard = () => (
 // Individual Faculty Card
 const FacultyCard = ({ member, index }) => {
   const [hovered, setHovered] = useState(false);
-  const color = getColor(member.subject);
-  const hasImage = member.image && !member.image.includes("placeholder");
+  const [imgFailed, setImgFailed] = useState(false);
+  const hasImage =
+    member.image && !member.image.includes("placeholder") && !imgFailed;
 
   return (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
+      tabIndex={0}
       style={{
         background: "#fff",
-        borderRadius: 20,
+        borderRadius: 22,
         overflow: "hidden",
         boxShadow: hovered
-          ? `0 20px 48px rgba(30,58,138,0.18), 0 4px 12px ${color.from}30`
-          : "0 4px 24px rgba(30,58,138,0.07)",
-        transform: hovered
-          ? "translateY(-6px) scale(1.01)"
-          : "translateY(0) scale(1)",
-        transition: "all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)",
+          ? "0 16px 36px rgba(30,58,138,0.16)"
+          : "0 4px 24px rgba(30,58,138,0.08)",
+        transform: hovered ? "translateY(-4px)" : "translateY(0)",
+        transition: "transform 0.25s ease, box-shadow 0.25s ease",
         position: "relative",
         cursor: "default",
+        outline: "none",
         animationDelay: `${index * 80}ms`,
         animationFillMode: "both",
         animation: `fadeSlideUp 0.5s ease ${index * 80}ms both`,
       }}
     >
+      {/* Visible focus ring for keyboard navigation */}
+      {hovered && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            borderRadius: 22,
+            boxShadow: `0 0 0 2px ${THEME.from}40`,
+            pointerEvents: "none",
+            zIndex: 2,
+          }}
+        />
+      )}
+
       {/* Top gradient accent strip */}
       <div
         style={{
           height: 5,
-          background: `linear-gradient(90deg, ${color.from}, ${color.to})`,
-          transition: "height 0.3s ease",
-          ...(hovered ? { height: 6 } : {}),
+          background: `linear-gradient(90deg, ${THEME.from}, ${THEME.accent})`,
         }}
       />
 
-      <div style={{ padding: "24px 24px 20px" }}>
+      <div style={{ padding: "30px 28px 26px" }}>
         {/* Top row: avatar + name/subject */}
         <div
           style={{
             display: "flex",
             alignItems: "flex-start",
-            gap: 16,
-            marginBottom: 18,
+            gap: 18,
+            marginBottom: 22,
           }}
         >
           {/* Avatar */}
           <div style={{ position: "relative", flexShrink: 0 }}>
             <div
               style={{
-                width: 72,
-                height: 72,
+                width: 84,
+                height: 84,
                 borderRadius: "50%",
                 background: hasImage
                   ? "transparent"
-                  : `linear-gradient(135deg, ${color.from}, ${color.to})`,
+                  : `linear-gradient(135deg, ${THEME.from}, ${THEME.to})`,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                border: `3px solid ${color.light}`,
-                boxShadow: `0 0 0 3px ${color.from}25`,
+                border: `3px solid ${THEME.light}`,
+                boxShadow: `0 0 0 3px ${THEME.from}20`,
                 overflow: "hidden",
-                transition: "box-shadow 0.3s",
-                ...(hovered ? { boxShadow: `0 0 0 4px ${color.from}40` } : {}),
               }}
             >
               {hasImage ? (
                 <img
                   src={member.image}
                   alt={member.name}
+                  onError={() => setImgFailed(true)}
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               ) : (
@@ -201,7 +218,7 @@ const FacultyCard = ({ member, index }) => {
                   style={{
                     color: "#fff",
                     fontWeight: 800,
-                    fontSize: 24,
+                    fontSize: 27,
                     letterSpacing: 1,
                   }}
                 >
@@ -212,15 +229,16 @@ const FacultyCard = ({ member, index }) => {
             {/* Online / Available dot */}
             {member.isAvailable && (
               <span
+                aria-label="Currently enrolling"
                 style={{
                   position: "absolute",
                   bottom: 2,
                   right: 2,
-                  width: 14,
-                  height: 14,
+                  width: 16,
+                  height: 16,
                   background: "#10B981",
                   borderRadius: "50%",
-                  border: "2px solid #fff",
+                  border: "2.5px solid #fff",
                   boxShadow: "0 0 6px #10B98180",
                 }}
               />
@@ -228,13 +246,14 @@ const FacultyCard = ({ member, index }) => {
           </div>
 
           {/* Name + Subject badge */}
-          <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ flex: 1, minWidth: 0, paddingTop: 4 }}>
             <h3
+              title={member.name}
               style={{
-                fontSize: 17,
+                fontSize: 19,
                 fontWeight: 800,
                 color: "#0F172A",
-                marginBottom: 6,
+                marginBottom: 8,
                 lineHeight: 1.3,
                 whiteSpace: "nowrap",
                 overflow: "hidden",
@@ -248,19 +267,28 @@ const FacultyCard = ({ member, index }) => {
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 5,
-                padding: "3px 11px",
+                gap: 6,
+                padding: "4px 13px",
                 borderRadius: 999,
-                background: `linear-gradient(90deg, ${color.from}, ${color.to})`,
-                color: "#fff",
-                fontSize: 12,
+                background: THEME.accentLight,
+                color: "#92400E",
+                fontSize: 12.5,
                 fontWeight: 700,
                 letterSpacing: 0.3,
-                boxShadow: `0 2px 8px ${color.from}40`,
+                border: `1px solid ${THEME.accent}40`,
+                maxWidth: "100%",
               }}
             >
-              <span>📚</span>
-              {member.subject}
+              <span aria-hidden="true">📚</span>
+              <span
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {member.subject}
+              </span>
             </span>
           </div>
         </div>
@@ -269,8 +297,8 @@ const FacultyCard = ({ member, index }) => {
         <div
           style={{
             height: 1,
-            background: `linear-gradient(90deg, ${color.from}20, transparent)`,
-            marginBottom: 16,
+            background: "linear-gradient(90deg, #1E3A8A1A, transparent)",
+            marginBottom: 20,
           }}
         />
 
@@ -280,41 +308,38 @@ const FacultyCard = ({ member, index }) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
+            gap: 14,
           }}
         >
           <div>
             <div
               style={{
-                fontSize: 11,
+                fontSize: 11.5,
                 color: "#94A3B8",
                 fontWeight: 600,
                 textTransform: "uppercase",
                 letterSpacing: 0.8,
-                marginBottom: 2,
+                marginBottom: 3,
               }}
             >
               Experience
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
               <span
                 style={{
-                  fontSize: 22,
+                  fontSize: 26,
                   fontWeight: 900,
-                  background: `linear-gradient(135deg, ${color.from}, ${color.to})`,
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
+                  color: THEME.from,
                   lineHeight: 1,
                 }}
               >
                 {member.experience}+
               </span>
-              <span style={{ fontSize: 12, color: "#64748B", fontWeight: 600 }}>
+              <span style={{ fontSize: 13, color: "#64748B", fontWeight: 600 }}>
                 Years
               </span>
             </div>
-            <div style={{ color: color.from }}>
-              <ExperienceDots years={member.experience} />
-            </div>
+            <ExperienceDots years={member.experience} />
           </div>
 
           {/* Availability tag */}
@@ -323,12 +348,12 @@ const FacultyCard = ({ member, index }) => {
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-end",
-              gap: 4,
+              gap: 5,
             }}
           >
             <span
               style={{
-                fontSize: 11,
+                fontSize: 11.5,
                 color: "#94A3B8",
                 fontWeight: 600,
                 textTransform: "uppercase",
@@ -341,14 +366,15 @@ const FacultyCard = ({ member, index }) => {
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 5,
-                padding: "4px 10px",
+                gap: 6,
+                padding: "5px 12px",
                 borderRadius: 999,
                 background: member.isAvailable ? "#ECFDF5" : "#FEF2F2",
                 color: member.isAvailable ? "#059669" : "#DC2626",
-                fontSize: 11,
+                fontSize: 12,
                 fontWeight: 700,
                 border: `1px solid ${member.isAvailable ? "#6EE7B7" : "#FECACA"}`,
+                whiteSpace: "nowrap",
               }}
             >
               <span
@@ -364,32 +390,25 @@ const FacultyCard = ({ member, index }) => {
             </span>
           </div>
         </div>
-      </div>
 
-      {/* Bottom CTA hover reveal */}
-      <div
-        style={{
-          padding: "0 24px",
-          maxHeight: hovered ? 52 : 0,
-          overflow: "hidden",
-          transition: "max-height 0.35s ease, padding 0.35s ease",
-          ...(hovered ? { paddingBottom: 20 } : {}),
-        }}
-      >
+        {/* CTA — always visible now, no hover-reveal animation */}
         <a
           href="#admission"
           style={{
             display: "block",
             textAlign: "center",
-            padding: "10px",
-            background: `linear-gradient(90deg, ${color.from}, ${color.to})`,
-            color: "#fff",
+            padding: "12px",
+            marginTop: 22,
+            background: hovered
+              ? `linear-gradient(90deg, ${THEME.from}, ${THEME.to})`
+              : "#F1F5F9",
+            color: hovered ? "#fff" : "#1E3A8A",
             borderRadius: 12,
-            fontSize: 13,
+            fontSize: 14,
             fontWeight: 700,
             textDecoration: "none",
-            boxShadow: `0 4px 14px ${color.from}40`,
             letterSpacing: 0.3,
+            transition: "background 0.25s ease, color 0.25s ease",
           }}
         >
           Apply for Admission →
@@ -404,19 +423,21 @@ const FacultyList = () => {
   const [faculty, setFaculty] = useState([]);
   const [meta, setMeta] = useState({ loading: true, error: false });
 
-  useEffect(() => {
-    const fetchFaculty = async () => {
-      try {
-        const response = await API.get("/faculty");
-        if (response.data.success) {
-          setFaculty(response.data.data);
-          setMeta({ loading: false, error: false });
-        }
-      } catch (error) {
-        console.error("Error fetching faculty data:", error);
-        setMeta({ loading: false, error: true });
+  const fetchFaculty = async () => {
+    setMeta({ loading: true, error: false });
+    try {
+      const response = await API.get("/faculty");
+      if (response.data.success) {
+        setFaculty(response.data.data);
+        setMeta({ loading: false, error: false });
       }
-    };
+    } catch (error) {
+      console.error("Error fetching faculty data:", error);
+      setMeta({ loading: false, error: true });
+    }
+  };
+
+  useEffect(() => {
     fetchFaculty();
   }, []);
 
@@ -424,16 +445,23 @@ const FacultyList = () => {
     <>
       <style>{`
         @keyframes fadeSlideUp {
-          from { opacity: 0; transform: translateY(28px); }
+          from { opacity: 0; transform: translateY(24px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50%       { opacity: 0.5; }
-        }
         @keyframes shimmer {
-          from { background-position: -200% 0; }
-          to   { background-position: 200% 0; }
+          0%   { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
+        }
+        .faculty-retry-btn:focus-visible {
+          outline: 2px solid #1E3A8A;
+          outline-offset: 2px;
         }
       `}</style>
 
@@ -441,7 +469,8 @@ const FacultyList = () => {
         id="faculty"
         style={{
           padding: "80px 0",
-          background: "linear-gradient(180deg, #F0F4FF 0%, #F8FAFC 100%)",
+          background:
+            "linear-gradient(180deg, #0F1F4D 0%, #16306f 32%, #EEF2FF 70%, #F8FAFC 100%)",
           position: "relative",
           overflow: "hidden",
         }}
@@ -456,7 +485,7 @@ const FacultyList = () => {
             height: 320,
             borderRadius: "50%",
             background:
-              "radial-gradient(circle, #6366F120 0%, transparent 70%)",
+              "radial-gradient(circle, #F59E0B22 0%, transparent 70%)",
             pointerEvents: "none",
           }}
         />
@@ -474,19 +503,19 @@ const FacultyList = () => {
           }}
         />
 
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px" }}>
           {/* Section Header */}
-          <div style={{ textAlign: "center", marginBottom: 56 }}>
+          <div style={{ textAlign: "center", marginBottom: 60 }}>
             <span
               style={{
                 display: "inline-block",
                 padding: "6px 18px",
-                background: "linear-gradient(90deg, #1E3A8A15, #6366F115)",
-                border: "1px solid #C7D2FE",
+                background: "rgba(245,158,11,0.15)",
+                border: "1px solid rgba(245,158,11,0.4)",
                 borderRadius: 999,
                 fontSize: 13,
                 fontWeight: 700,
-                color: "#4338CA",
+                color: "#FCD34D",
                 marginBottom: 16,
                 letterSpacing: 0.5,
               }}
@@ -497,7 +526,7 @@ const FacultyList = () => {
               style={{
                 fontSize: "clamp(28px, 4vw, 42px)",
                 fontWeight: 900,
-                color: "#0F172A",
+                color: "#FFFFFF",
                 marginBottom: 14,
                 lineHeight: 1.2,
               }}
@@ -505,7 +534,7 @@ const FacultyList = () => {
               Meet Our{" "}
               <span
                 style={{
-                  background: "linear-gradient(90deg, #1E3A8A, #6366F1)",
+                  background: "linear-gradient(90deg, #F59E0B, #FCD34D)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                 }}
@@ -515,7 +544,7 @@ const FacultyList = () => {
             </h2>
             <p
               style={{
-                color: "#64748B",
+                color: "rgba(219,234,254,0.85)",
                 fontSize: 16,
                 maxWidth: 520,
                 margin: "0 auto",
@@ -527,13 +556,13 @@ const FacultyList = () => {
             </p>
           </div>
 
-          {/* Cards Grid */}
+          {/* Cards Grid — wider min card width = bigger cards, fewer per row */}
           {meta.loading ? (
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-                gap: 24,
+                gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
+                gap: 28,
               }}
             >
               {Array.from({ length: 6 }).map((_, i) => (
@@ -544,13 +573,40 @@ const FacultyList = () => {
             <div
               style={{
                 textAlign: "center",
-                color: "#EF4444",
-                padding: "40px 0",
-                fontSize: 15,
-                fontWeight: 600,
+                padding: "48px 24px",
+                background: "#fff",
+                borderRadius: 20,
+                boxShadow: "0 4px 24px rgba(30,58,138,0.07)",
               }}
             >
-              ⚠️ Faculty data load nahi ho saka. Server check karein.
+              <div style={{ fontSize: 32, marginBottom: 12 }}>⚠️</div>
+              <p
+                style={{
+                  color: "#EF4444",
+                  fontSize: 15,
+                  fontWeight: 600,
+                  marginBottom: 16,
+                }}
+              >
+                Faculty data load nahi ho saka. Server check karein.
+              </p>
+              <button
+                className="faculty-retry-btn"
+                onClick={fetchFaculty}
+                style={{
+                  padding: "10px 24px",
+                  background: "#1E3A8A",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 10,
+                  fontSize: 14,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  boxShadow: "0 4px 14px rgba(30,58,138,0.3)",
+                }}
+              >
+                Try Again
+              </button>
             </div>
           ) : faculty.length === 0 ? (
             <div
@@ -571,21 +627,25 @@ const FacultyList = () => {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-                gap: 24,
+                gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
+                gap: 28,
               }}
             >
               {faculty.map((member, index) => (
-                <FacultyCard key={member._id} member={member} index={index} />
+                <FacultyCard
+                  key={member._id || `${member.name}-${index}`}
+                  member={member}
+                  index={index}
+                />
               ))}
             </div>
           )}
 
           {/* Bottom stats bar */}
-          {!meta.loading && faculty.length > 0 && (
+          {!meta.loading && !meta.error && faculty.length > 0 && (
             <div
               style={{
-                marginTop: 52,
+                marginTop: 56,
                 display: "flex",
                 justifyContent: "center",
                 flexWrap: "wrap",
@@ -603,7 +663,7 @@ const FacultyList = () => {
                   label: "Avg Experience",
                   value:
                     Math.round(
-                      faculty.reduce((s, f) => s + f.experience, 0) /
+                      faculty.reduce((s, f) => s + (f.experience || 0), 0) /
                         faculty.length,
                     ) + "+ yrs",
                   icon: "🏆",
@@ -617,8 +677,7 @@ const FacultyList = () => {
                     style={{
                       fontSize: 28,
                       fontWeight: 900,
-                      color: "#1E3A8A",
-                      background: "linear-gradient(135deg, #1E3A8A, #6366F1)",
+                      background: "linear-gradient(135deg, #F59E0B, #FCD34D)",
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
                     }}
@@ -626,7 +685,11 @@ const FacultyList = () => {
                     {stat.value}
                   </div>
                   <div
-                    style={{ fontSize: 13, color: "#94A3B8", fontWeight: 600 }}
+                    style={{
+                      fontSize: 13,
+                      color: "rgba(219,234,254,0.7)",
+                      fontWeight: 600,
+                    }}
                   >
                     {stat.label}
                   </div>
