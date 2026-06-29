@@ -1,9 +1,9 @@
-// backend/models/Admission.js
+// backend/models/Student.js
 const mongoose = require("mongoose");
 
-const AdmissionSchema = new mongoose.Schema(
+const StudentSchema = new mongoose.Schema(
   {
-    studentName: {
+    name: {
       type: String,
       required: [true, "Student name is required"],
       trim: true,
@@ -28,7 +28,7 @@ const AdmissionSchema = new mongoose.Schema(
     },
     group: {
       type: String,
-      required: [true, "Please select program/group"],
+      required: [true, "Please select group"],
       enum: [
         "General (Middle School)",
         "Science",
@@ -40,19 +40,23 @@ const AdmissionSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      required: [true, "Contact phone number is required"],
+      required: [true, "Phone number is required"],
     },
     address: {
       type: String,
       default: "Mianwali",
     },
-    status: {
+    rollNumber: {
       type: String,
-      enum: ["Pending", "Reviewed", "Accepted", "Rejected"],
-      default: "Pending",
+      trim: true,
+      default: "",
+    },
+    enrolledAt: {
+      type: Date,
+      default: Date.now,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
-module.exports = mongoose.model("Admission", AdmissionSchema);
+module.exports = mongoose.model("Student", StudentSchema);

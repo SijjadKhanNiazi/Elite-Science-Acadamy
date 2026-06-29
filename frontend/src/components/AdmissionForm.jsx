@@ -6,8 +6,8 @@ const AdmissionForm = () => {
   const [formData, setFormData] = useState({
     studentName: "",
     fatherName: "",
-    grade: "11th (F.Sc)",
-    group: "Pre-Medical",
+    grade: "6th",
+    group: "General (Middle School)",
     phone: "",
     address: "",
   });
@@ -38,8 +38,8 @@ const AdmissionForm = () => {
         setFormData({
           studentName: "",
           fatherName: "",
-          grade: "11th (F.Sc)",
-          group: "Pre-Medical",
+          grade: "6th",
+          group: "General (Middle School)",
           phone: "",
           address: "",
         });
@@ -124,9 +124,19 @@ const AdmissionForm = () => {
                 onChange={handleChange}
                 className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
               >
-                <option value="11th (F.Sc)">11th (F.Sc)</option>
-                <option value="12th (F.Sc)">12th (F.Sc)</option>
-                <option value="Matric (9th/10th)">Matric (9th/10th)</option>
+                <optgroup label="Middle School">
+                  <option value="6th">6th Class</option>
+                  <option value="7th">7th Class</option>
+                  <option value="8th">8th Class</option>
+                </optgroup>
+                <optgroup label="Matric">
+                  <option value="9th">9th Class</option>
+                  <option value="10th">10th Class</option>
+                </optgroup>
+                <optgroup label="F.Sc / Inter">
+                  <option value="11th (F.Sc)">11th (F.Sc)</option>
+                  <option value="12th (F.Sc)">12th (F.Sc)</option>
+                </optgroup>
               </select>
             </div>
 
@@ -140,11 +150,12 @@ const AdmissionForm = () => {
                 onChange={handleChange}
                 className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
               >
+                <option value="General (Middle School)">General (Middle School)</option>
+                <option value="Science">Science</option>
+                <option value="Arts">Arts</option>
                 <option value="Pre-Medical">Pre-Medical</option>
                 <option value="Pre-Engineering">Pre-Engineering</option>
-                <option value="ICS (Computer Science)">
-                  ICS (Computer Science)
-                </option>
+                <option value="ICS (Computer Science)">ICS (Computer Science)</option>
               </select>
             </div>
           </div>

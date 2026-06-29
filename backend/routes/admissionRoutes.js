@@ -24,4 +24,17 @@ router.route("/").get(protectAdmin, async (req, res) => {
   }
 });
 
+// 3. Protected Delete Entry Point
+router.route("/:id").delete(protectAdmin, async (req, res) => {
+  try {
+    const record = await Admission.findByIdAndDelete(req.params.id);
+    if (!record) {
+      return res.status(404).json({ success: false, message: "Admission record not found." });
+    }
+    return res.status(200).json({ success: true, message: "Admission record deleted." });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 module.exports = router;

@@ -52,6 +52,8 @@ app.use(passport.session());
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/faculty", require("./routes/facultyRoutes"));
 app.use("/api/admissions", require("./routes/admissionRoutes"));
+app.use("/api/students", require("./routes/studentRoutes"));
+app.use("/api/fees", require("./routes/feeRoutes"));
 
 app.get("/", (req, res) => {
   res.send("Elite Science Academy Backend API with Passport.js is Live! 🚀");
