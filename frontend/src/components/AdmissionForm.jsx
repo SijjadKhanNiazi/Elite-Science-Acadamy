@@ -32,8 +32,7 @@ const AdmissionForm = () => {
         setStatus({
           loading: false,
           success: true,
-          message:
-            "Alhamdulillah! Your admission form has been submitted successfully.",
+          message: "Your admission form has been submitted successfully.",
         });
         // Clear Form after successful entry
         setFormData({

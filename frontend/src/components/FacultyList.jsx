@@ -50,12 +50,6 @@ const FacultyList = () => {
             Highly experienced specialist teachers dedicated to preparing
             students for competitive board exams.
           </p>
-
-          {meta.source && (
-            <span className="inline-block mt-4 px-3 py-1 text-xs font-mono font-bold rounded-md bg-blue-50 text-blue-700 border border-blue-200">
-              ⚡ Engine Optimization: {meta.source}
-            </span>
-          )}
         </div>
 
         {faculty.length === 0 ? (

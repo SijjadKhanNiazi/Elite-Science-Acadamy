@@ -69,16 +69,35 @@ const ContactMap = () => {
             </div>
           </div>
 
-          {/* Embedded Google Maps Frame for Local Navigation */}
-          <div className="lg:col-span-2 w-full h-80 rounded-2xl overflow-hidden shadow-sm border border-gray-200">
-            <iframe
-              title="Elite Science Academy Mianwali Location Map"
-              src="https://www.google.com/maps/place/Mianwali,+Pakistan/@32.5828774,71.5141356,13z/data=!3m1!4b1!4m6!3m5!1s0x39271820c5ae398d:0x93a7da7672fc2613!8m2!3d32.5839229!4d71.5370297!16zL20vMDUyZGR4?entry=ttu&g_ep=EgoyMDI2MDYyNC4wIKXMDSoASAFQAw%3D%3D"
-              className="w-full h-full border-0"
-              allowFullScreen=""
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
+          {/* Interactive Map Visual Redirect Card */}
+          <div className="lg:col-span-2 w-full h-80 rounded-2xl overflow-hidden shadow-sm border border-gray-200 bg-slate-950 flex flex-col items-center justify-center relative group p-6 text-center">
+            {/* Dark Grid Background Effect */}
+            <div className="absolute inset-0 bg-[radial-gradient(#ffffff15_1px,transparent_1px)] [background-size:16px_16px] opacity-60"></div>
+
+            <div className="relative z-10 space-y-4">
+              <div className="w-16 h-16 bg-amber-500/10 text-amber-500 rounded-full flex items-center justify-center mx-auto border border-amber-500/20 group-hover:scale-110 transition-transform duration-300">
+                <FaMapMarkerAlt size={28} />
+              </div>
+
+              <div>
+                <h3 className="text-xl font-bold text-white mb-2">
+                  Find Us on Google Maps
+                </h3>
+                <p className="text-slate-400 max-w-sm mx-auto text-sm">
+                  Click below to launch the live navigation route directly to
+                  Elite Science Academy in your Maps application.
+                </p>
+              </div>
+
+              <a
+                href="https://www.google.com/maps/place//@32.5827836,71.5335498,21z/data=!4m6!1m5!3m4!2zMzLCsDM0JzU3LjkiTiA3McKwMzInMDEuMyJF!8m2!3d32.582739!4d71.533683?entry=ttu&g_ep=EgoyMDI2MDYyNC4wIKXMDSoASAFQAw%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center px-6 py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+              >
+                Open Live Location Route
+              </a>
+            </div>
           </div>
         </div>
       </div>
